@@ -1,0 +1,170 @@
+[
+  {
+    "name": "search_uniprot",
+    "description": "Search the UniProtKB protein database and return full protein records in a single call. Takes a free-text query such as 'Human insulin' or 'SARS-CoV-2 spike protein', resolves it against the UniProt search API, then retrieves the detailed record for each match. Each record includes protein and gene names, organism, function, subcellular localization, disease associations, annotated features, PDB cross-references, and the full amino acid sequence. Native UniProt query syntax is passed through unmodified, so field filters can be used directly, e.g. 'insulin AND organism_name:\"Homo sapiens\"' or 'spike AND reviewed:true'. An optional 'species' parameter narrows results to one organism without requiring field syntax, but it must be the full scientific name, e.g. species='Homo sapiens' rather than species='human'. Structured results are returned in structuredContent.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Input parameters for a UniProtKB protein search.",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Protein search query. Plain text such as 'Human insulin' or 'SARS-CoV-2 spike protein' is expanded across the protein name, gene, function, disease, and keyword fields. A query containing UniProt field syntax (e.g. 'gene:INS', 'organism_name:\"Homo sapiens\"', 'reviewed:true') is sent to UniProt verbatim."
+        },
+        "species": {
+          "type": "string",
+          "description": "Optional organism filter, ANDed onto the query. Must be the full scientific name UniProt recognizes, e.g. 'Homo sapiens' or 'Severe acute respiratory syndrome coronavirus 2' - common names like 'human' will not match. Omit to search across all organisms. Do not set this alongside a query that already contains its own organism_name field filter - the two are combined and can conflict."
+        }
+      },
+      "required": ["query"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "description": "Structured UniProtKB protein records.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "'success' for a successful search, 'error' when the search failed."
+        },
+        "query": {
+          "type": "string",
+          "description": "The original query string submitted to the tool."
+        },
+        "uniprot_query": {
+          "type": "string",
+          "description": "The query actually sent to the UniProt search API after field expansion, or the original query when it was passed through verbatim."
+        },
+        "total_found": {
+          "type": "integer",
+          "description": "Number of UniProtKB entries matching the expanded query in uniprot_query. For a plain-text query this expansion is deliberately broad, so this count is frequently in the millions and must NOT be reported as the number of relevant proteins. Results are relevance-ranked, so the entries in the proteins array are the best matches. This count is only a precise match count when the caller supplied explicit UniProt field syntax."
+        },
+        "returned": {
+          "type": "integer",
+          "description": "Number of protein records included in the proteins array."
+        },
+        "proteins": {
+          "type": "array",
+          "description": "Matching proteins in UniProt relevance order.",
+          "items": {
+            "type": "object",
+            "description": "A single UniProtKB protein record.",
+            "properties": {
+              "accession": {
+                "type": "string",
+                "description": "UniProtKB primary accession, e.g. 'P01308'."
+              },
+              "entry_name": {
+                "type": "string",
+                "description": "UniProtKB entry name (mnemonic identifier), e.g. 'INS_HUMAN'."
+              },
+              "protein_name": {
+                "type": "string",
+                "description": "Recommended protein name, falling back to a submitted or alternative name for unreviewed entries."
+              },
+              "gene_names": {
+                "type": "array",
+                "description": "Gene names associated with this protein.",
+                "items": {
+                  "type": "string",
+                  "description": "Single gene name."
+                }
+              },
+              "organism": {
+                "type": "string",
+                "description": "Scientific name of the source organism."
+              },
+              "length": {
+                "type": "integer",
+                "description": "Sequence length in amino acid residues."
+              },
+              "reviewed": {
+                "type": "boolean",
+                "description": "True for manually reviewed Swiss-Prot entries, false for unreviewed TrEMBL entries."
+              },
+              "url": {
+                "type": "string",
+                "description": "Canonical UniProt web URL for this entry."
+              },
+              "function": {
+                "type": "string",
+                "description": "Curated description of the protein's biological function."
+              },
+              "subcellular_locations": {
+                "type": "array",
+                "description": "Subcellular locations where the protein is found.",
+                "items": {
+                  "type": "string",
+                  "description": "Single subcellular location name."
+                }
+              },
+              "diseases": {
+                "type": "array",
+                "description": "Diseases associated with variants of this protein.",
+                "items": {
+                  "type": "object",
+                  "description": "A single disease association.",
+                  "properties": {
+                    "disease_id": {
+                      "type": "string",
+                      "description": "Full disease name as recorded by UniProt."
+                    },
+                    "acronym": {
+                      "type": "string",
+                      "description": "Short disease acronym, when assigned."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the disease and its relationship to this protein."
+                    }
+                  }
+                }
+              },
+              "features": {
+                "type": "array",
+                "description": "Annotated domains and regions along the sequence.",
+                "items": {
+                  "type": "object",
+                  "description": "A single sequence feature.",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Feature type, e.g. 'Domain' or 'Region'."
+                    },
+                    "start": {
+                      "type": "integer",
+                      "description": "Start position of the feature, 1-based."
+                    },
+                    "end": {
+                      "type": "integer",
+                      "description": "End position of the feature, 1-based and inclusive."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the feature."
+                    }
+                  }
+                }
+              },
+              "pdb_ids": {
+                "type": "array",
+                "description": "Protein Data Bank identifiers for experimentally determined structures of this protein.",
+                "items": {
+                  "type": "string",
+                  "description": "Single PDB identifier."
+                }
+              },
+              "sequence": {
+                "type": "string",
+                "description": "Full amino acid sequence in single-letter code."
+              }
+            }
+          }
+        },
+        "message": {
+          "type": "string",
+          "description": "Error description. Only present when status is 'error'."
+        }
+      },
+      "required": ["status"]
+    }
+  }
+]

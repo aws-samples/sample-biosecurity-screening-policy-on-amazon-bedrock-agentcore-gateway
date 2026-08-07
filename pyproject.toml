@@ -1,0 +1,37 @@
+[project]
+name = "research-gateway"
+version = "0.1.0"
+description = "PMC search Lambda behind an Amazon Bedrock AgentCore Gateway, exposed as an MCP tool."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "aws-cdk-lib==2.257.0",
+    "aws-cdk.aws-lambda-python-alpha==2.256.1a0",
+    "aws-cdk.aws-bedrock-agentcore-alpha==2.256.1a0",
+    "constructs==10.6.0",
+    "boto3==1.43.13",
+    "defusedxml==0.7.1",
+    "httpx==0.28.1",
+    "numpy==2.3.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.0.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"research_gateway.screening.embedding" = ["data/*.npz"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "gateway_integration: calls a deployed AgentCore Gateway with ambient AWS credentials",
+    "gateway_full: gateway integration test that invokes the biosafety screeners",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

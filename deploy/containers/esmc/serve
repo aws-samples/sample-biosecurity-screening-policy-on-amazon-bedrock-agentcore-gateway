@@ -1,0 +1,11 @@
+#!/bin/bash
+# --timeout 0 disables the arbiter watchdog. The model load happens during the
+# worker's import of app.py, which the watchdog would otherwise count against
+# --timeout and SIGABRT mid-load. --preload is NOT an option here: it would
+# initialise CUDA in the arbiter, and a CUDA context does not survive fork.
+#
+# --threads 4 switches gunicorn to the gthread worker so a concurrent GET /ping
+# is not starved behind queued inference — /ping has a hard 2s timeout, and a
+# non-200 gets the instance replaced.
+exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 4 --timeout 0 \
+    --graceful-timeout 30 --chdir /opt/ml/code app:app

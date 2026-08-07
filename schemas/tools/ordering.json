@@ -1,0 +1,35 @@
+[
+  {
+    "name": "ordering_tool",
+    "description": "Submit protein amino acid sequences for synthesis",
+    "inputSchema": {
+      "type": "object",
+      "description": "Amino acid sequences for synthesis.",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "description": "List of amino acid sequence strings.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["inputs"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "description": "Output from ordering_tool.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "'success' or 'error'."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable result or error description."
+        }
+      },
+      "required": ["status"]
+    }
+  }
+]

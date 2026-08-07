@@ -1,0 +1,16 @@
+*.pyc
+.DS_Store
+**/node_modules
+**/cdk.out/asset*
+**/dist
+**/build
+**/target
+**/vendor
+**/.venv
+**/venv
+**/__pycache__
+**/*.pyc
+**/.DS_Store
+**/.terraform
+**/.terraform.lock.hcl
+**/.protoshield

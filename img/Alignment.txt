@@ -1,0 +1,19 @@
+3G8H_1|Chain A|Phospholipase A2, ammodytoxin C|Vipera ammodytes ammodytes
+4NTW_3|Chain C|Basic phospholipase A2 homolog Tx-beta|Micrurus tener tener
+
+Score:48.1 bits(113), Expect:3e-13, 
+Method:Compositional matrix adjust., 
+Identities:32/102(31%), Positives:42/102(41%), Gaps:7/102(6%)
+
+Query  1    SLLEFGMMILGETGKNPLTSYSFYGCYCGVGGKGTPKDATDRCCFVHDCCYGN---LPDC  57
+            +L +F +MI   T       +  YGCYC      TP D  DRCC     CY     +  C
+Sbjct  1    NLNQFRLMIKC-TNDRVWADFVDYGCYCVARDSNTPVDDLDRCCQAQKQCYDEAVKVHGC  59
+
+Query  58   SPKTDRYKY---HRENGAIVCGKGTSCENRICECDRAAAICF  96
+             P    Y +   +  +     G  T C N +C CDR A +C 
+Sbjct  60   KPLVMFYSFECRYLASDLDCSGNNTKCRNFVCNCDRTATLCI  101
+
+
+
+
+

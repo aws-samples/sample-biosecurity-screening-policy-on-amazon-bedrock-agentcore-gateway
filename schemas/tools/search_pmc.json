@@ -1,0 +1,110 @@
+[
+  {
+    "name": "search_pmc",
+    "description": "Search PubMed Central (PMC) for scientific articles with optional citation-based reranking. Supports standard PMC search syntax including field tags ([Title], [Author], [Journal]), boolean operators (AND, OR, NOT), quoted phrases, and relative date filters such as 'last 2 years[dp]'. Structured results are returned in structuredContent.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Input parameters for a PMC search.",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "PMC search query. Use PMC syntax, e.g. 'CRISPR gene editing' or 'mRNA vaccine COVID-19 AND last 2 years[dp]'."
+        },
+        "rerank_by": {
+          "type": "string",
+          "description": "Set to 'references' to rank results by citation count within the result set. Omit to return results in PMC relevance order."
+        }
+      },
+      "required": ["query"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "description": "Structured PMC search results.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "'success' for a successful search, 'error' when the search failed."
+        },
+        "query": {
+          "type": "string",
+          "description": "The original query string submitted to the tool."
+        },
+        "total_found": {
+          "type": "integer",
+          "description": "Total number of articles returned from PMC before the returned-count limit was applied."
+        },
+        "returned": {
+          "type": "integer",
+          "description": "Number of articles included in the articles array."
+        },
+        "ranked_by": {
+          "type": "string",
+          "description": "'references' when results are reranked by citation count, otherwise omitted or null."
+        },
+        "articles": {
+          "type": "array",
+          "description": "Matching articles, ordered by PMC relevance or citation count depending on ranked_by.",
+          "items": {
+            "type": "object",
+            "description": "A single PMC article record.",
+            "properties": {
+              "pmc_id": {
+                "type": "string",
+                "description": "PMC identifier including the 'PMC' prefix."
+              },
+              "pmid": {
+                "type": "string",
+                "description": "PubMed identifier, when available."
+              },
+              "doi": {
+                "type": "string",
+                "description": "Digital Object Identifier."
+              },
+              "url": {
+                "type": "string",
+                "description": "Canonical URL derived from the DOI."
+              },
+              "title": {
+                "type": "string",
+                "description": "Article title."
+              },
+              "authors": {
+                "type": "array",
+                "description": "Authors in first-name last-name order.",
+                "items": {
+                  "type": "string",
+                  "description": "Single author name."
+                }
+              },
+              "journal": {
+                "type": "string",
+                "description": "Journal title."
+              },
+              "year": {
+                "type": "integer",
+                "description": "Publication year, when parseable."
+              },
+              "abstract": {
+                "type": "string",
+                "description": "Full article abstract."
+              },
+              "reference_count": {
+                "type": "integer",
+                "description": "Number of references cited by this article."
+              },
+              "referenced_by_count": {
+                "type": "integer",
+                "description": "Number of articles in this result set that cite this article."
+              }
+            }
+          }
+        },
+        "message": {
+          "type": "string",
+          "description": "Error description. Only present when status is 'error'."
+        }
+      },
+      "required": ["status"]
+    }
+  }
+]

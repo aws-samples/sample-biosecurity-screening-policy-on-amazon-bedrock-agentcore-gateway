@@ -1,0 +1,13 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+title = "research-gateway gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "SafeProtein_Bench benchmark data: amino-acid sequences misidentified as AWS access tokens / API keys. Matched by filename so it also covers pre-restructure history paths (data/SafeProtein_Bench.*, research_gateway/mmseqs2/SafeProtein_Bench.fasta)."
+paths = [
+  '''(^|/)SafeProtein_Bench\.(fasta|json)$''',
+]

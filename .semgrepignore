@@ -1,0 +1,6 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+# Benchmark data, not source code. Amino-acid sequences are misidentified by
+# generic secret-pattern rules (aws-access-token, generic-api-key) as credentials.
+deploy/containers/mmseqs2/SafeProtein_Bench.fasta
